@@ -14,7 +14,7 @@ update_run_config <- TRUE
 #sapply(files.sources, source)
 
 configure_run_file <- "configure_run.yml"
-config_set_name <- "default_aed"
+config_set_name <- "default"
 
 config <- FLAREr::set_configuration(configure_run_file,lake_directory, config_set_name = config_set_name)
 
