@@ -99,13 +99,13 @@ s3:
     bucket: drivers/noaa/gefs-v12-reprocess
   analysis:
     endpoint: s3.flare-forecast.org
-    bucket: analysis
+    bucket: analysist/sunp_oxy
   targets:
     endpoint: s3.flare-forecast.org
-    bucket: targets
+    bucket: targets/sunp_oxy
   forecasts:
     endpoint: s3.flare-forecast.org
-    bucket: forecasts
+    bucket: forecastst/sunp_oxy
   forecasts_csv:
     endpoint: s3.flare-forecast.org
     bucket: forecasts-csv
@@ -114,7 +114,7 @@ s3:
     bucket: forecasts/parquet
   warm_start:
     endpoint: s3.flare-forecast.org
-    bucket: restart
+    bucket: restart/sunp_oxy
   scores:
     endpoint: s3.flare-forecast.org
     bucket: scores
