@@ -6,7 +6,7 @@ message("Beginning generate targets")
 #' Set the lake directory to the repository directory
 
 lake_directory <- here::here()
-config_set_name <- "default_aed"
+config_set_name <- "default"
 
 #' Source the R files in the repository
 
