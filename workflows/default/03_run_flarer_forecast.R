@@ -74,8 +74,8 @@ obs <- FLAREr::create_obs_matrix(cleaned_observations_file_long = file.path(conf
                                  obs_config = obs_config,
                                  config)
 
-obs[1, ,]
-obs[2, ,]
+#obs[1, ,]
+#obs[2, ,]
 #obs[,2:96,] <- NA
 # first dimension is states, time, depth
 
@@ -154,7 +154,7 @@ FLAREr::put_forecast(saved_file, eml_file_name = NULL, config)
 
 
 rm(da_forecast_output)
-gc()
+#gc()
 
 FLAREr::update_run_config(config, lake_directory, configure_run_file, saved_file, new_horizon = 16, day_advance = 1)
 
