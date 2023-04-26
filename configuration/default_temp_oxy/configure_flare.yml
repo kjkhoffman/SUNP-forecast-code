@@ -77,11 +77,18 @@ default_init:
    white_ice_thickness: 0.0
    blue_ice_thickness: 0.0
 inflow:
+   include_inflow: FALSE
    use_forecasted_inflow: FALSE
    forecast_inflow_model: .na
+   observed_inflow_filename: .na
+   inflow_variables: .na
+   use_ler_vars: FALSE
 met:
    use_forecasted_met: TRUE
-   forecast_met_model: noaa/NOAAGEFS_1hr #noaa-point/NOAAGEFS_1hr #NOAAGEFS_1hr-debias
+   use_observed_met: FALSE
+   local_directory: .na
+   observed_met_filename: .na
+   use_ler_vars: FALSE
 uncertainty:
    use_obs_constraint: TRUE #no DA
    observation: TRUE
