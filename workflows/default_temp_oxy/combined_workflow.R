@@ -1,6 +1,7 @@
 library(tidyverse)
 library(lubridate)
 lake_directory <- here::here()
+print(lake_directory)
 setwd(lake_directory)
 forecast_site <- "sunp"
 configure_run_file <- "configure_run.yml"
