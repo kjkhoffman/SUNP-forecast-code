@@ -113,7 +113,7 @@ s3:
     bucket: targets/sunp_oxy
   forecasts:
     endpoint: s3.flare-forecast.org
-    bucket: forecastst/sunp_oxy
+    bucket: forecasts/sunp_oxy
   forecasts_csv:
     endpoint: s3.flare-forecast.org
     bucket: forecasts-csv
