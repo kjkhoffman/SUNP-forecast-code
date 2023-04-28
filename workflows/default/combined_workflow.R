@@ -11,6 +11,8 @@ forecast_site <- "sunp"
 configure_run_file <- "configure_run.yml"
 update_run_config <- TRUE
 
+ping_url <- "https://hc-ping.com/9af38db8-d058-4e2c-9779-cd69891d9216"
+
 #' Source the R files in the repository
 
 #source(file.path(lake_directory, "R", "workflow_functions.R"))
