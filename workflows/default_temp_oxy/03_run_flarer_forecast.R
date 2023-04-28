@@ -66,16 +66,11 @@ met_out <- FLAREr::generate_met_files_arrow(obs_met_file = NULL,
                                             use_forecast = TRUE,
                                             use_ler_vars = FALSE,
                                             use_siteid_s3 = TRUE)
-#Need to remove the 00 ensemble member because it only goes 16-days in the future
-met_out$filenames <- met_out$filenames[!stringr::str_detect(met_out$filenames, "ens00")]
 
 #Create observation matrix
 obs <- FLAREr::create_obs_matrix(cleaned_observations_file_long = file.path(config_obs$file_path$targets_directory, config_obs$site_id, config_set_name, paste0(config_obs$site_id,"-targets-insitu.csv")),
                                  obs_config = obs_config,
                                  config)
-obs[1, ,]
-obs[2, ,]
-# dimensions: states, time, depth
 
 states_config <- FLAREr::generate_states_to_obs_mapping(states_config, obs_config)
 
@@ -139,7 +134,7 @@ message("Combining forecasts")
 combined_forecasts <- dplyr::bind_rows(forecast_df, past_forecasts)
 
 message("Scoring forecasts")
-FLAREr::generate_forecast_score_arrow(targets_file = file.path(config$file_path$qaqc_data_directory,paste0(config$location$site_id, "-targets-insitu.csv")),
+FLAREr::generate_forecast_score_arrow(targets_file = file.path(config_obs$file_path$targets_directory, config_obs$site_id, config_set_name, paste0(config_obs$site_id,"-targets-insitu.csv")),
                                       forecast_df = combined_forecasts,
                                       use_s3 = config$run_config$use_s3,
                                       bucket = config$s3$scores$bucket,
