@@ -36,6 +36,7 @@ da_setup:
     no_negative_states: TRUE
     assimilate_first_step: FALSE
     use_obs_constraint: TRUE
+    obs_filename: sunp-targets-insitu.csv
 model_settings:
    ncore: 4
    model_name: glm_aed #other is "null"

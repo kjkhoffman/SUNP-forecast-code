@@ -60,7 +60,7 @@ insitu_qaqc <- function(realtime_file,
     temp <- field_noon[,c(1, i+1)]
     temp$Depth <- depths[i]
     colnames(temp) <- c('DateTime', 'Temp', 'Depth')
-    field_format <- full_join(temp, field_format)
+    field_format <- full_join(temp, field_format, by = c("DateTime", "Temp", "Depth"))
   }
   
   
