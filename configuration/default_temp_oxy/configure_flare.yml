@@ -101,6 +101,7 @@ uncertainty:
    inflow_process: TRUE
 output_settings:
    diagnostics_names:  [extc]
+   evaluate_past: TRUE
 s3:
   drivers:
     endpoint: s3.flare-forecast.org
