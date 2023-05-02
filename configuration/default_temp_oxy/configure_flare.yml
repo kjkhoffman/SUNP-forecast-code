@@ -102,6 +102,7 @@ uncertainty:
 output_settings:
    diagnostics_names:  [extc]
    evaluate_past: TRUE
+   variables_in_scores: [state, parameter]
 s3:
   drivers:
     endpoint: s3.flare-forecast.org
