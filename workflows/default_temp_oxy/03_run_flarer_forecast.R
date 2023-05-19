@@ -115,6 +115,9 @@ forecast_df <- FLAREr::write_forecast_arrow(da_forecast_output = da_forecast_out
                                             endpoint = config$s3$forecasts_parquet$endpoint,
                                             local_directory = file.path(lake_directory, "forecasts/parquet"))
 
+rm(da_forecast_output)
+gc()
+
 message("Writing arrow score")
 
 #message("Grabbing last 16-days of forecasts")
@@ -146,9 +149,6 @@ FLAREr::generate_forecast_score_arrow(targets_file = file.path(config_obs$file_p
 
 
 FLAREr::put_forecast(saved_file, eml_file_name = NULL, config)
-
-rm(da_forecast_output)
-gc()
 
 FLAREr::update_run_config(config, lake_directory, configure_run_file, saved_file, new_horizon = 35, day_advance = 1)
 
