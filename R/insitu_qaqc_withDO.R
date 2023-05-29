@@ -20,18 +20,31 @@ insitu_qaqc <- function(realtime_file,
   manual_names <- unique(manual$parameter)
   variables
   
-  manual <- manual %>% 
-    dplyr::filter(parameter %in% c("waterTemperature_degC", "oxygenDissolved_mgl", "oxygenDissolvedPercentOfSaturation_pct")) %>% 
-    dplyr::mutate(date = as.Date(date)) %>% 
-    dplyr::select(date, depth_m, parameter, value, station) %>% 
-    tidyr::pivot_wider(names_from = parameter, values_from = value) %>% 
-    tidyr::unchop(everything()) # do this bc of strange formatting with pivot wider
   
-  # rename to old names
-  manual <- manual %>% 
-    rename(temp_C = waterTemperature_degC,
-           DO_mgl = oxygenDissolved_mgl,
-           DO_pctsat = oxygenDissolvedPercentOfSaturation_pct)
+  nms <- unique(manual$parameter)
+  
+  if('waterTemperature_degC' %in% nms){
+    manual <- manual %>% 
+      dplyr::filter(parameter %in% c("waterTemperature_degC", "oxygenDissolved_mgl", "oxygenDissolvedPercentOfSaturation_pct")) %>% 
+      dplyr::mutate(date = as.Date(date)) %>% 
+      dplyr::select(date, depth_m, parameter, value, station) %>% 
+      tidyr::pivot_wider(names_from = parameter, values_from = value) %>% 
+      tidyr::unchop(everything()) # do this bc of strange formatting with pivot wider
+    
+    # rename to old names
+    manual <- manual %>% 
+      rename(temp_C = waterTemperature_degC,
+             DO_mgl = oxygenDissolved_mgl,
+             DO_pctsat = oxygenDissolvedPercentOfSaturation_pct)
+    
+  }else{
+    manual <- manual %>% 
+      dplyr::filter(parameter %in% c("temp_C", "DO_mgl", "DO_pctsat")) %>% 
+      dplyr::mutate(date = as.Date(date)) %>% 
+      dplyr::select(date, depth_m, parameter, value, station) %>% 
+      tidyr::pivot_wider(names_from = parameter, values_from = value) %>% 
+      tidyr::unchop(everything()) # do this bc of strange formatting with pivot wider
+  }
   
   manual <- manual %>% 
     dplyr::filter(station == 210) %>%  # this is the deep hole site
