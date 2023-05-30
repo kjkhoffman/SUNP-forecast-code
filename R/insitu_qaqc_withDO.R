@@ -33,7 +33,7 @@ insitu_qaqc <- function(realtime_file,
     
     # rename to old names
     manual <- manual %>% 
-      rename(temp_C = waterTemperature_degC,
+      dplyr::rename(temp_C = waterTemperature_degC,
              DO_mgl = oxygenDissolved_mgl,
              DO_pctsat = oxygenDissolvedPercentOfSaturation_pct)
     
@@ -62,7 +62,7 @@ insitu_qaqc <- function(realtime_file,
   
   # remove manual observations from depths where buoy obs exist
   manual <- manual %>% 
-    filter(ifelse(DateTime > as.Date('2007-01-01'), Depth > 12, Depth >0))
+    dplyr::filter(ifelse(DateTime > as.Date('2007-01-01'), Depth > 12, Depth >0))
   
   # and historical high frequency buoy temp data
   # extract midnight measurements only and only observations when buoy is deployed
