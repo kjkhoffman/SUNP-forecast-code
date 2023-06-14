@@ -49,7 +49,8 @@ insitu_qaqc <- function(realtime_file,
   manual <- manual %>%
     dplyr::filter(station == 210) %>%  # this is the deep hole site
     dplyr::mutate(time = hms("00:00:00")) %>%
-    dplyr::mutate(DateTime = as.POSIXct(date, format = "%Y-%m-%d %H:%M:%S", tz = 'UTC+5') + 60*60*4) %>%
+    #dplyr::mutate(DateTime = as.POSIXct(date, format = "%Y-%m-%d %H:%M:%S", tz = 'UTC+5') + 60*60*4) %>%
+    dplyr::mutate(DateTime = as.POSIXct(date, format = "%Y-%m-%d %H:%M:%S", tz = 'UTC')) %>%
     dplyr::select(DateTime, depth_m, temp_C, DO_mgl, DO_pctsat, station) %>%
     dplyr::mutate(method = 'manual') %>%
     dplyr::mutate(DO_mmol_m3 = DO_mgl*1000/32) %>% #to convert mg/L (or ppm) to molar units
@@ -62,12 +63,15 @@ insitu_qaqc <- function(realtime_file,
 
   # remove manual observations from depths where buoy obs exist
   manual <- manual %>%
-    dplyr::filter(ifelse(DateTime > as_datetime('2007-01-01', tz = 'America/New_York'), Depth > 12, Depth >0))
+    #dplyr::filter(ifelse(DateTime > as_datetime('2007-01-01', tz = 'America/New_York'), Depth > 12, Depth >0))
+    dplyr::filter(ifelse(DateTime > as.POSIXct('2007-01-01 00:00:00'), Depth > 12, Depth >0))
+
 
   # and historical high frequency buoy temp data
   # extract midnight measurements only and only observations when buoy is deployed
   field_all <- read.csv(hist_buoy_file[1])
-  field_all$datetime <- as.POSIXct(field_all$datetime, format = "%Y-%m-%d %H:%M:%S")
+  field_all$datetime <- as.POSIXct(field_all$datetime, format = "%Y-%m-%d %H:%M:%S", tz = 'America/New_York')
+  field_all$datetime <- lubridate::with_tz(field_all$datetime, "UTC") # convert EST to UTC
   field_midn <- field_all %>%
     dplyr::mutate(day = day(datetime)) %>%
     dplyr::mutate(hour = hour(datetime)) %>%
@@ -121,7 +125,8 @@ insitu_qaqc <- function(realtime_file,
   field_oxy <- read.csv(hist_buoy_file[2])
 
   # extract midnight measurements only and only observations when buoy is deployed
-  field_oxy$datetime <- as.POSIXct(field_oxy$datetime, format = "%Y-%m-%d %H:%M:%S")
+  field_oxy$datetime <- as.POSIXct(field_oxy$datetime, format = "%Y-%m-%d %H:%M:%S", tz = "American/New_York")
+  field_oxy$datetime <- lubridate::with_tz(field_oxy$datetime, "UTC") # convert EST to UTC
   field_midn_oxy <- field_oxy %>%
     dplyr::mutate(day = day(datetime)) %>%
     dplyr::mutate(hour = hour(datetime)) %>%
@@ -391,8 +396,9 @@ insitu_qaqc <- function(realtime_file,
     dplyr::rename(observed = value)
 
   dh <- na.omit(dh)
-  attr(dh$time, "tzone") <- "UTC"
-  dh$time <- dh$time - 60*60*4
+  dh$time <- lubridate::force_tz(dh$time, "UTC") # extra measure just to make sure
+  #attr(dh$time, "tzone") <- "UTC"
+  #dh$time <- dh$time - 60*60*4
 
   # combine historial and real-time data
 
