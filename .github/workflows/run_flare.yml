@@ -7,8 +7,7 @@ jobs:
 # Point to the right path, run the right Rscript command
   run_default:
     name: Run temperature only
-#     runs-on: ubuntu-latest
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     container:
       image: rqthomas/flare-rocker:4.2.1
     steps:
@@ -24,7 +23,7 @@ jobs:
         
   run_default_temp_oxy:
     name: Run temperature + oxygen
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     container:
       image: rqthomas/flare-rocker:4.2.1
     steps:
