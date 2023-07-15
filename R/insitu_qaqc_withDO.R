@@ -102,6 +102,8 @@ insitu_qaqc <- function(realtime_file,
   field_format <- field_format %>% dplyr::select( 'DateTime', 'Depth', 'Temp') %>%
     dplyr::arrange(DateTime, Depth)
 
+  field_format <- na.omit(field_format)
+
   field_format$Depth <- as.numeric(field_format$Depth)
   # round depths to nearest integer for matching with DO
   for(i in 1:nrow(field_format)){
