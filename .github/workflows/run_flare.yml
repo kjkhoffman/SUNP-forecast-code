@@ -24,8 +24,8 @@ jobs:
         
   run_default_temp_oxy:
     name: Run temperature + oxygen
-    runs-on: self-hosted
-    #runs-on: ubuntu-latest
+    #runs-on: self-hosted
+    runs-on: ubuntu-latest
     container:
       image: rqthomas/flare-rocker:4.2.1
     steps:
