@@ -1,0 +1,89 @@
+s3:
+  drivers:
+    endpoint: renc.osn.xsede.org
+    bucket: bio230121-bucket01/flare/drivers/met
+  #drivers:
+  #  endpoint: s3.flare-forecast.org
+  #  bucket: drivers/noaa/gefs-v12-reprocess
+  targets:
+    endpoint: s3.flare-forecast.org
+    bucket: targets/sunp_v2
+  forecasts:
+    endpoint: s3.flare-forecast.org
+    bucket: forecasts/sunp_v2
+  forecasts_parquet:
+    endpoint: s3.flare-forecast.org
+    bucket: forecasts/parquet
+  warm_start:
+    endpoint: s3.flare-forecast.org
+    bucket: restart/sunp_v2
+  scores:
+    endpoint: s3.flare-forecast.org
+    bucket: scores/parquet
+location:
+   site_id: sunp
+   name: Lake Sunapee
+   latitude: 43.3913   #Degrees North, taken from EDI
+   longitude: -72.0576  #Degrees West, taken from EDI
+da_setup:
+    da_method: enkf
+    par_fit_method: perturb_const
+    ensemble_size:  256
+    no_negative_states: TRUE
+    assimilate_first_step: FALSE
+    use_obs_constraint: TRUE
+    obs_filename: sunp-targets-insitu.csv
+model_settings:
+   ncore: 4
+   model_name: glm
+   base_GLM_nml: glm3_woAED.nml
+   modeled_depths: [0.0, 0.5, 1.0,
+                    1.5, 2.0, 3.0,
+                    3.5, 4.0, 4.5,
+                    5.0, 5.5, 6.0,
+                    6.5, 7.0, 7.5,
+                    8.0, 8.5, 9.0,
+                    9.5, 10.0, 15.0,
+                    20.0, 25.0, 30.0]
+   par_config_file: parameter_calibration_config.csv
+   obs_config_file: observations_config.csv
+   states_config_file: states_config.csv
+   depth_model_sd_config_file: depth_model_sd.csv
+default_init:
+   lake_depth: 33  #not a modeled state
+   temp: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5] # default temps under mixed conditions in spring
+   temp_depths: [0.127, 1.004, 2.005, 3.021, 4.002, 5.004, 6.004, 7.01, 8.001, 9.015, 9.518]
+   salinity: 0.0
+   snow_thickness: 0.0
+   white_ice_thickness: 0.0
+   blue_ice_thickness: 0.0
+inflow:
+   include_inflow: FALSE
+   use_forecasted_inflow: FALSE
+   forecast_inflow_model: .na
+   observed_inflow_filename: .na
+   inflow_variables: .na
+   use_ler_vars: FALSE
+met:
+   use_forecasted_met: TRUE
+   use_observed_met: FALSE
+   local_directory: .na
+   observed_met_filename: .na
+   use_ler_vars: FALSE
+   use_openmeteo: TRUE
+   openmeteo_api: ensemble_forecast
+   openmeteo_model: ecmwf_ifs04
+   use_openmeteo_archive: FALSE
+uncertainty:
+   use_obs_constraint: TRUE
+   observation_uncertainty: TRUE
+   process_uncertainty: TRUE
+   weather_uncertainty: TRUE
+   initial_condition_uncertainty: TRUE
+   parameter_uncertainty: TRUE
+   met_downscale_uncertainty: TRUE
+   inflow_process_uncertainty: TRUE
+output_settings:
+   diagnostics_names:  [extc]
+   evaluate_past: TRUE
+   variables_in_scores: [state, parameter]
