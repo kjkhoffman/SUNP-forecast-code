@@ -72,7 +72,7 @@ met:
    use_ler_vars: FALSE
    use_openmeteo: TRUE
    openmeteo_api: ensemble_forecast
-   openmeteo_model: ecmwf_ifs04
+   openmeteo_model: gfs_seamless #ecmwf_ifs04
    use_openmeteo_archive: FALSE
 uncertainty:
    use_obs_constraint: TRUE
