@@ -28,7 +28,7 @@ location:
 da_setup:
     da_method: enkf
     par_fit_method: perturb_const
-    ensemble_size:  48
+    ensemble_size:  256
     no_negative_states: TRUE
     assimilate_first_step: FALSE
     use_obs_constraint: TRUE
