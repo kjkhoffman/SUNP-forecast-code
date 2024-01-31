@@ -1,8 +1,8 @@
 restart_file: .na
-start_datetime: 2023-10-01 00:00:00
+start_datetime: 2023-10-16 00:00:00
 end_datetime: .na
-forecast_start_datetime: 2023-10-07 00:00:00
-forecast_horizon: 10
+forecast_start_datetime: 2023-10-16 00:00:00
+forecast_horizon: 90
 sim_name: open_meteo
 configure_flare: configure_flare.yml
 configure_obs: observation_processing.yml
