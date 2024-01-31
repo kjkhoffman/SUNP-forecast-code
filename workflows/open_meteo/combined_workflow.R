@@ -11,7 +11,7 @@ forecast_site <- "sunp"
 configure_run_file <- "configure_run.yml"
 update_run_config <- TRUE
 
-ping_url <- "https://hc-ping.com/9af38db8-d058-4e2c-9779-cd69891d9216"
+#ping_url <- "https://hc-ping.com/9af38db8-d058-4e2c-9779-cd69891d9216"
 
 #' Source the R files in the repository
 
@@ -19,6 +19,10 @@ ping_url <- "https://hc-ping.com/9af38db8-d058-4e2c-9779-cd69891d9216"
 source(file.path(lake_directory, "R", "insitu_qaqc_withDO.R"))
 
 #' Generate the `config_obs` object and create directories if necessary
+#'
+
+noaa_ready <- TRUE
+while(noaa_ready){
 
 config_obs <- FLAREr::initialize_obs_processing(lake_directory, observation_yml = "observation_processing.yml", config_set_name = config_set_name)
 config <- FLAREr::set_configuration(configure_run_file,lake_directory, config_set_name = config_set_name)
@@ -69,17 +73,11 @@ cleaned_insitu_file <- insitu_qaqc(realtime_file = file.path(config_obs$file_pat
                                    config = config_obs,
                                    lake_directory = lake_directory)
 
-#' Move targets to s3 bucket
-
-message("Successfully generated targets")
 
 FLAREr::put_targets(site_id = config_obs$site_id,
                     cleaned_insitu_file,
                     use_s3 = config$run_config$use_s3,
                     config = config)
-
-message("Successfully moved targets to s3 bucket")
-
 
 config <- FLAREr::set_configuration(configure_run_file,lake_directory, config_set_name = config_set_name)
 
@@ -108,7 +106,7 @@ output <- FLAREr::run_flare(lake_directory = lake_directory,
                              endpoint = config$s3$warm_start$endpoint,
                              use_https = TRUE)
 
-  RCurl::url.exists(ping_url, timeout = 5)
+  #RCurl::url.exists(ping_url, timeout = 5)
 
   noaa_ready <- FLAREr::check_noaa_present_arrow(lake_directory = lake_directory,
                                                  configure_run_file = configure_run_file,
