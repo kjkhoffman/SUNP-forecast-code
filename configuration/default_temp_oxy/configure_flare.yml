@@ -1,15 +1,26 @@
-file_path:
-   qaqc_data_directory: .na #'C:/Users/wwoel/Desktop/SUNP-forecast/data_processed/'  this is the temporary directory where FLARE will write and erase files
-   data_directory: .na # 'C:/Users/wwoel/Desktop/SUNP-forecast/data_raw'
-   noaa_directory: .na #'C:/Users/wwoel/Desktop/SUNP-forecast/forecasted_drivers/'
-   inflow_directory: .na # 'C:/Users/wwoel/Desktop/SUNP-forecast/forecasted_drivers/'
-   configuration_directory: .na # 'C:/Users/wwoel/Desktop/SUNP-forecast/configuration/'
-   execute_directory: .na #'C:/Users/wwoel/Desktop/SUNP-forecast/flare_tempdir/'
-   run_config: .na #'C:/Users/wwoel/Desktop/SUNP-forecast/configuration/flarer/configure_run.yml'
+s3:
+  drivers:
+    endpoint: renc.osn.xsede.org
+    bucket: bio230121-bucket01/flare/drivers/met/gefs-v12
+  targets:
+    endpoint: renc.osn.xsede.org
+    bucket: bio230121-bucket01/flare/targets/bvre
+  forecasts:
+    endpoint: renc.osn.xsede.org
+    bucket: bio230121-bucket01/flare/forecasts/netcdf
+  forecasts_parquet:
+    endpoint: renc.osn.xsede.org
+    bucket: bio230121-bucket01/flare/forecasts/parquet
+  warm_start:
+    endpoint: renc.osn.xsede.org
+    bucket: bio230121-bucket01/flare/restart
+  scores:
+    endpoint: renc.osn.xsede.org
+    bucket: bio230121-bucket01/flare/scores/parquet
 location:
    site_id: sunp
    name: Lake Sunapee
-   latitude: 43.3913   #Degrees North, taken from EDI 
+   latitude: 43.3913   #Degrees North, taken from EDI
    longitude: 72.0576  #Degrees West, taken from EDI
 metadata:
    generate_eml: TRUE
@@ -44,16 +55,16 @@ model_settings:
    base_AED_nml: aed2.nml
    base_AED_phyto_pars_nml: aed2_phyto_pars.nml
    base_AED_zoop_pars_nml: aed2_zoop_pars.nml
-   modeled_depths: [0.1, 0.5, 1.0, 
-                    1.5, 2.0, 3.0, 
-                    3.5, 4.0, 4.5, 
-                    5.0, 5.5, 6.0, 
-                    6.5, 7.0, 7.5, 
+   modeled_depths: [0.1, 0.5, 1.0,
+                    1.5, 2.0, 3.0,
+                    3.5, 4.0, 4.5,
+                    5.0, 5.5, 6.0,
+                    6.5, 7.0, 7.5,
                     8.0, 8.5, 9.0,
                     9.5, 10.0, 15.0,
                     20.0, 25.0, 30.0]
-   
-   
+
+
  # [0.0, 0.1, 0.33, 0.67,
  #              1.00, 1.33, 1.67,
  #              2.00, 2.33, 2.67,
@@ -90,6 +101,7 @@ met:
    local_directory: .na
    observed_met_filename: .na
    use_ler_vars: FALSE
+   forecast_lag_days: 1
 uncertainty:
    use_obs_constraint: TRUE #no DA
    observation: TRUE
@@ -103,28 +115,3 @@ output_settings:
    diagnostics_names:  [extc]
    evaluate_past: TRUE
    variables_in_scores: [state, parameter]
-s3:
-  drivers:
-    endpoint: s3.flare-forecast.org
-    bucket: drivers/noaa/gefs-v12-reprocess
-  analysis:
-    endpoint: s3.flare-forecast.org
-    bucket: analysist/sunp_oxy
-  targets:
-    endpoint: s3.flare-forecast.org
-    bucket: targets/sunp_oxy
-  forecasts:
-    endpoint: s3.flare-forecast.org
-    bucket: forecasts/sunp_oxy
-  forecasts_csv:
-    endpoint: s3.flare-forecast.org
-    bucket: forecasts-csv
-  forecasts_parquet:
-    endpoint: s3.flare-forecast.org
-    bucket: forecasts/parquet
-  warm_start:
-    endpoint: s3.flare-forecast.org
-    bucket: restart/sunp_oxy
-  scores:
-    endpoint: s3.flare-forecast.org
-    bucket: scores
