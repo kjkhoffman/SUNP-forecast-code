@@ -1,8 +1,7 @@
 on:
- #workflow_dispatch:
-  #schedule:
-  #- cron: "0 11 * * *"
-  workflow_dispatch:
+ workflow_dispatch:
+ schedule:
+ - cron: "0 11 * * *"
 
 jobs:
 # Point to the right path, run the right Rscript command
