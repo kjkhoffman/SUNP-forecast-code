@@ -2,7 +2,7 @@ library(dplyr)
 #library(minioclient)
 library(weather)
 library(ggplot2)
-library(jpeg)
+#library(jpeg)
 library(patchwork)
 library(cowplot)
 
