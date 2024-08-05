@@ -21,11 +21,14 @@ jobs:
            fetch-depth: 0
            set-safe-directory: '*'
 
+      - run: apt-get install libmagick++-dev
+
       - name: install deps
         shell: Rscript {0}
         run: |
           #remotes::install_deps(".", dep=TRUE)
           devtools::install_github("dreamRs/weather")
+          install.packages('libmagick')
           install.packages("patchwork")
           install.packages("cowplot")
 
