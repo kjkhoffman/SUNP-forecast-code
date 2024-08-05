@@ -6,15 +6,7 @@ library(jpeg)
 library(patchwork)
 library(cowplot)
 
-# minioclient::mc_alias_set("s3_store",
-#                           'renc.osn.xsede.org',
-#                           Sys.getenv("OSN_KEY"),
-#                           Sys.getenv("OSN_SECRET"))
-#
-# mc_ls(paste0("s3_store/",'bio230121-bucket01/flare/forecasts/'))
-
 #forecast_date <- Sys.Date()
-
 forecast_date <- Sys.Date() - lubridate::days(1)
 noaa_date <- Sys.Date() - lubridate::days(2)
 
@@ -143,14 +135,7 @@ forecast_weather_code <- read.csv("https://api.open-meteo.com/v1/forecast?latitu
   mutate(description = ifelse(is.na(description),'na',description))
 
 
-# ggplot(data = forecast_weather_code) +
-#   geom_line(aes(date, as.numeric(plot_tool))) +
-#   geom_weather(aes(date, plot_tool, weather = description))
-
-
 plotting_frame <- data.frame(height = seq.int(1,100), width = seq.int(1,400))
-img <- readJPEG('data_viz_swim/SunapeeVis2.jpeg', native = TRUE)
-
 
 water_temps <- flare_forecast_df |>
   select(date, CI_lower, CI_upper) |>
@@ -196,13 +181,6 @@ img_overlay <- ggplot(plotting_frame, aes(width, height)) +
   geom_text(data = date_df, aes(x = width, y = height, label = date), size = 1.5, fontface = 'bold', family = 'Ariel') +
   xlim(1,400) +
   ylim(1,100) +
-  # inset_element(p = img,
-  #               left = 0.00,
-  #               bottom = 0.0,
-  #               right = 1,
-  #               top = 1,
-  #               on_top = TRUE) +
-  # annotate('text',x = 60, y = 60, label = 'test')
   theme_cowplot() +
   theme(axis.line=element_blank(),axis.text.x=element_blank(),
         axis.text.y=element_blank(),axis.ticks=element_blank(),
