@@ -1,5 +1,5 @@
 library(dplyr)
-library(minioclient)
+#library(minioclient)
 library(weather)
 library(ggplot2)
 library(jpeg)
