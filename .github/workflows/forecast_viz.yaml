@@ -14,8 +14,8 @@ jobs:
       OSN_SECRET: ${{ secrets.OSN_SECRET }}
     container: rocker/rstudio:latest
     steps:
-      - name: Checkout Repo
       - run: git config --system --add safe.directory '*'
+
       - uses: actions/checkout@v4
         with:
            fetch-depth: 0
