@@ -12,7 +12,8 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       OSN_KEY: ${{ secrets.OSN_KEY }}
       OSN_SECRET: ${{ secrets.OSN_SECRET }}
-    container: rocker/rstudio:latest
+    container:
+      image: rqthomas/flare-rocker:4.3.2
     steps:
       - run: git config --system --add safe.directory '*'
 
