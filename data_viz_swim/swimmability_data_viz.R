@@ -159,9 +159,9 @@ air_temps <- met_forecast_df_mean_extremes |>
 
 weather_icons <- forecast_weather_code |>
   select(date,description) |>
-  mutate(#height = 62,
-         #width = c(39, 95, 147, 203, 254, 308, 362),
-         height = 68,
+  mutate(#height = 62, ## USE THESE FOR RUNNING LOCALLY - NOT ON GH
+         #width = c(39, 95, 147, 203, 254, 308, 362), ## USE THESE FOR RUNNING LOCALLY - NOT ON GH
+         height = 67,
          width = c(55, 110, 162, 217, 270, 324, 379))
 
 
