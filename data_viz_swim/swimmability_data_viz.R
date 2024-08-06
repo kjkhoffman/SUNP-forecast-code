@@ -73,6 +73,7 @@ flare_forecast_df <- arrow::open_dataset(flare_forecast_s3) |>
          prediction = (round(((prediction) * (9/5) + 32), digits = 1))) |>
   group_by(date) |>
   summarise(mean = mean(prediction),
+            median = round(median(prediction), digits = 1),
             sd = sd(prediction),
             se = sd / sqrt(n()),
             CI_lower = mean - (1.96 * se),
@@ -137,23 +138,28 @@ forecast_weather_code <- read.csv("https://api.open-meteo.com/v1/forecast?latitu
 
 plotting_frame <- data.frame(height = seq.int(1,100), width = seq.int(1,400))
 
-water_temps <- flare_forecast_df |>
+water_temp_range <- flare_forecast_df |>
   select(date, CI_lower, CI_upper) |>
   mutate(watertemp_text = paste0(round(CI_lower, digits = 1), ' - ', round(CI_upper, digits = 1))) |>
-  mutate(height = 38,
+  mutate(height = 36,
+         width = c(53, 108, 162, 215, 270, 323, 377))
+
+water_temp_median <- flare_forecast_df |>
+  select(date, median) |>
+  mutate(height = 40,
          width = c(53, 108, 162, 215, 270, 323, 377))
 
 air_temps <- met_forecast_df_mean_extremes |>
   mutate(airtemp_text = paste0(round(mean_min), ' - ', round(mean_max))) |>
   select(date, airtemp_text) |>
-  mutate(height = 55,
+  mutate(height = 57,
          width = c(55, 110, 162, 217, 270, 324, 379))
 
 
 
 weather_icons <- forecast_weather_code |>
   select(date,description) |>
-  mutate(height = 58,
+  mutate(height = 62,
          width = c(39, 95, 147, 203, 254, 308, 362))
 
 
@@ -166,19 +172,23 @@ day_df <- weather_icons |>
 day_df$weekday[1] <- 'Today'
 
 date_df <- day_df |>
-  # mutate(month = lubridate::month(as.Date(date, format="%Y-%m-%d")),
-  #        day = lubridate::day(as.Date(date, format="%Y-%m-%d")),
-  #        date_abbrv = paste0(month,'/',day)) |>
-  select(date) |>
+  mutate(month = lubridate::month(as.Date(date, format="%Y-%m-%d")),
+         month_abbr = month.abb[month],
+         #month_name = months(as.Date(date, format="%Y-%m-%d")),
+         day = lubridate::day(as.Date(date, format="%Y-%m-%d")),
+         year = lubridate::year(as.Date(date, format="%Y-%m-%d"))) |>
+  mutate(date_value = paste(day, month_abbr, year)) |>
+  select(date_value) |>
   mutate(height = 18,
          width = c(55, 108, 162, 217, 270, 325, 379))
 
 img_overlay <- ggplot(plotting_frame, aes(width, height)) +
   geom_weather(data = weather_icons, aes(width, height, weather = description), size = 8) +
-  geom_text(data = water_temps, aes(x = width, y = height, label = watertemp_text), size = 2, fontface = 'bold', family = 'Ariel') +
-  geom_text(data = air_temps, aes(x = width, y = height, label = airtemp_text), size = 2, fontface = 'bold', family = 'Ariel') +
+  geom_text(data = water_temp_range, aes(x = width, y = height, label = watertemp_text), size = 1.6, fontface = 'bold', family = 'Ariel') +
+  geom_text(data = water_temp_median, aes(x = width, y = height, label = median), size = 2.2, fontface = 'bold', family = 'Ariel') +
+  geom_text(data = air_temps, aes(x = width, y = height, label = airtemp_text), size = 2.2, fontface = 'bold', family = 'Ariel') +
   geom_text(data = day_df, aes(x = width, y = height, label = weekday), size = 2, fontface = 'bold', family = 'Ariel') +
-  geom_text(data = date_df, aes(x = width, y = height, label = date), size = 1.5, fontface = 'bold', family = 'Ariel') +
+  geom_text(data = date_df, aes(x = width, y = height, label = date_value), size = 1.5, fontface = 'bold', family = 'Ariel') +
   xlim(1,400) +
   ylim(1,100) +
   theme_cowplot() +
@@ -193,7 +203,7 @@ img_overlay <- ggplot(plotting_frame, aes(width, height)) +
 
 forecast_plot <- ggdraw() +
   #draw_image("data_viz_swim/SunapeeVis2.jpeg", scale = 0.75, width = 1.1, height = 1, x = 0) +
-  draw_image("data_viz_swim/SunapeeVis4.jpeg", scale = 0.95, width = 1, height = 1, x = -0.01) +
+  draw_image("data_viz_swim/SunapeeVis5.jpeg", scale = 0.95, width = 1, height = 1, x = -0.01) +
   draw_plot(img_overlay)
 
 ggsave(filename = 'data_viz_swim/sunp_forecast_plot.jpeg', plot = forecast_plot ,width = 5, height = 3)
