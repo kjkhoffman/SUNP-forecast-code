@@ -12,7 +12,8 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       OSN_KEY: ${{ secrets.OSN_KEY }}
       OSN_SECRET: ${{ secrets.OSN_SECRET }}
-    container: rocker/tidyverse:latest
+    container:
+      image: rqthomas/flare-rocker:4.3.2
     steps:
       - run: git config --system --add safe.directory '*'
 
@@ -20,8 +21,6 @@ jobs:
         with:
            fetch-depth: 0
            set-safe-directory: '*'
-
-      - run: sudo apt install libmagick++-dev
 
       - name: install deps
         shell: Rscript {0}
