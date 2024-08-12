@@ -10,29 +10,29 @@ library(cowplot)
 forecast_date <- Sys.Date() - lubridate::days(1)
 noaa_date <- Sys.Date() - lubridate::days(2)
 
-met_forecast_s3 <- arrow::s3_bucket(file.path("bio230121-bucket01/flare/drivers/met/gefs-v12/stage2",paste0("reference_datetime=",noaa_date),"site_id=sunp"),
-                           endpoint_override = 'renc.osn.xsede.org',
-                           anonymous = TRUE)
-
-# grab 8 day forecast (including today)
-
-#daily mean high and mean low
-met_forecast_df_mean_extremes <- arrow::open_dataset(met_forecast_s3) |>
-  filter(variable == 'air_temperature') |>
-  collect() |>
-  filter(datetime < (noaa_date + lubridate::days(8))) |>
-  mutate(date = as.Date(datetime)) |>
-  group_by(date,parameter) |>
-  summarise(day_min = min(prediction),
-            day_max = max(prediction)) |>
-  ungroup() |>
-  group_by(date) |>
-  summarise(mean_min = mean(day_min),
-            mean_max = mean(day_max)) |>
-  ungroup() |>
-  mutate(mean_min = (round(((mean_min - 273.15) * (9/5) + 32), digits = 1)),
-         mean_max = (round(((mean_max - 273.15) * (9/5) + 32), digits = 1))) |>
-  filter(date >= forecast_date)
+# met_forecast_s3 <- arrow::s3_bucket(file.path("bio230121-bucket01/flare/drivers/met/gefs-v12/stage2",paste0("reference_datetime=",noaa_date),"site_id=sunp"),
+#                            endpoint_override = 'renc.osn.xsede.org',
+#                            anonymous = TRUE)
+#
+# # grab 8 day forecast (including today)
+#
+# #daily mean high and mean low
+# met_forecast_df_mean_extremes <- arrow::open_dataset(met_forecast_s3) |>
+#   filter(variable == 'air_temperature') |>
+#   collect() |>
+#   filter(datetime < (noaa_date + lubridate::days(8))) |>
+#   mutate(date = as.Date(datetime)) |>
+#   group_by(date,parameter) |>
+#   summarise(day_min = min(prediction),
+#             day_max = max(prediction)) |>
+#   ungroup() |>
+#   group_by(date) |>
+#   summarise(mean_min = mean(day_min),
+#             mean_max = mean(day_max)) |>
+#   ungroup() |>
+#   mutate(mean_min = (round(((mean_min - 273.15) * (9/5) + 32), digits = 1)),
+#          mean_max = (round(((mean_max - 273.15) * (9/5) + 32), digits = 1))) |>
+#   filter(date >= forecast_date)
 
 
 # ## daily forecast for NOON temperatures with CI
@@ -82,7 +82,6 @@ flare_forecast_df <- arrow::open_dataset(flare_forecast_s3) |>
   filter(date >= forecast_date,
          date < (forecast_date + lubridate::days(7)))
 
-
 #0	Clear sky
 #1, 2, 3	Mainly clear, partly cloudy, and overcast
 #45, 48	Fog and depositing rime fog
@@ -128,13 +127,22 @@ weather_description <- data.frame(code = as.character(c(0,1,2,3,45,48,51,53,55,5
                                                   'thunderstorm' #99
                                                   ))
 
-forecast_weather_code <- read.csv("https://api.open-meteo.com/v1/forecast?latitude=43.4&longitude=-72.05&daily=weather_code&timezone=America%2FNew_York&format=csv") |>
-  rename(date = latitude, code = longitude) |>
-  select(date, code) |>
+# forecast_weather_code <- read.csv("https://api.open-meteo.com/v1/forecast?latitude=43.4&longitude=-72.05&daily=weather_code&timezone=America%2FNew_York&format=csv") |>
+#   rename(date = latitude, code = longitude) |>
+#   select(date, code) |>
+#   slice(3:9) |>
+#   left_join(weather_description, by = 'code') |>
+#   mutate(description = ifelse(is.na(description),'na',description))
+
+
+met_forecast_df <- readr::read_csv('https://api.open-meteo.com/v1/forecast?latitude=43.39102&longitude=-72.053627&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=America%2FNew_York&models=gfs_seamless&format=csv') |>
+  rename(date = latitude, code = longitude, airtemp_min = utc_offset_seconds, airtemp_max = elevation) |>
+  select(date, code, airtemp_min, airtemp_max) |>
   slice(3:9) |>
   left_join(weather_description, by = 'code') |>
-  mutate(description = ifelse(is.na(description),'na',description))
-
+  mutate(description = ifelse(is.na(description),'na',description),
+         airtemp_min = (round(((as.numeric(airtemp_min)) * (9/5) + 32))),
+         airtemp_max = (round(((as.numeric(airtemp_max)) * (9/5) + 32))))
 
 plotting_frame <- data.frame(height = seq.int(1,100), width = seq.int(1,400))
 
@@ -149,15 +157,15 @@ water_temp_median <- flare_forecast_df |>
   mutate(height = 40,
          width = c(53, 108, 162, 215, 270, 323, 377))
 
-air_temps <- met_forecast_df_mean_extremes |>
-  mutate(airtemp_text = paste0(round(mean_min), ' - ', round(mean_max))) |>
+air_temps <- met_forecast_df |>
+  mutate(airtemp_text = paste0(round(airtemp_min), ' - ', round(airtemp_max))) |>
   select(date, airtemp_text) |>
   mutate(height = 57,
          width = c(55, 110, 162, 217, 270, 324, 379))
 
 
 
-weather_icons <- forecast_weather_code |>
+weather_icons <- met_forecast_df |>
   select(date,description) |>
   mutate(#height = 62, ## USE THESE FOR RUNNING LOCALLY - NOT ON GH
          #width = c(39, 95, 147, 203, 254, 308, 362), ## USE THESE FOR RUNNING LOCALLY - NOT ON GH
