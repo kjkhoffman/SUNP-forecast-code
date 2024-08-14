@@ -148,7 +148,7 @@ plotting_frame <- data.frame(height = seq.int(1,100), width = seq.int(1,400))
 
 water_temp_range <- flare_forecast_df |>
   select(date, CI_lower, CI_upper) |>
-  mutate(watertemp_text = paste0(round(CI_lower, digits = 1), ' - ', round(CI_upper, digits = 1))) |>
+  mutate(watertemp_text = paste0(format(round(CI_lower, digits = 1), nsmall = 1), ' - ', format(round(CI_upper, digits = 1), nsmall = 1))) |>
   mutate(height = 36,
          width = c(53, 108, 162, 215, 270, 323, 377))
 
