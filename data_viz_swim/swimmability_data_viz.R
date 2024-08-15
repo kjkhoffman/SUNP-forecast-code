@@ -75,9 +75,11 @@ flare_forecast_df <- arrow::open_dataset(flare_forecast_s3) |>
   summarise(mean = mean(prediction),
             median = round(median(prediction), digits = 1),
             sd = sd(prediction),
-            se = sd / sqrt(n()),
-            CI_lower = mean - (1.96 * se),
-            CI_upper = mean + (1.96 * se)) |>
+            CI_upper = quantile(prediction, 0.975),
+            CI_lower = quantile(prediction, 0.025)) |>
+            #se = sd / sqrt(n()),
+            #CI_lower = mean - (1.96 * se),
+            #CI_upper = mean + (1.96 * se)) |>
   ungroup() |>
   filter(date >= forecast_date,
          date < (forecast_date + lubridate::days(7)))
@@ -154,6 +156,7 @@ water_temp_range <- flare_forecast_df |>
 
 water_temp_median <- flare_forecast_df |>
   select(date, median) |>
+  mutate(median = format(round(median, digits = 1), nsmall = 1)) |>
   mutate(height = 40,
          width = c(53, 108, 162, 215, 270, 323, 377))
 
