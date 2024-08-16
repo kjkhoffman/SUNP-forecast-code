@@ -20,7 +20,7 @@ ping_url <- "https://hc-ping.com/9af38db8-d058-4e2c-9779-cd69891d9216"
 #' Source the R files in the repository
 
 #source(file.path(lake_directory, "R", "workflow_functions.R"))
-source(file.path(lake_directory, "R", "insitu_qaqc_withDO.R"))
+source(file.path(lake_directory, "R", "insitu_qaqc.R"))
 
 #' Generate the `config_obs` object and create directories if necessary
 
