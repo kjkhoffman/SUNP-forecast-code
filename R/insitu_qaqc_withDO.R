@@ -1,5 +1,4 @@
-
-insitu_qaqc <- function(realtime_file,
+insitu_qaqc_withDO <- function(realtime_file,
                         hist_buoy_file,
                         hist_manual_file,
                         hist_all_file,
@@ -336,11 +335,19 @@ insitu_qaqc <- function(realtime_file,
     dplyr::arrange(DateTime, Depth)
 
   # pull out oxygen data from QAQC'ed current buoy file
+
+  # temp_oxy <- d %>%
+  #   dplyr::select(TIMESTAMP, doobs_1, doobs) %>%
+  #   dplyr::rename(DateTime = TIMESTAMP,
+  #                 DO_1 = doobs_1,
+  #                 DO_10 = doobs)
+
   temp_oxy <- d %>%
-    dplyr::select(TIMESTAMP, doobs_1, doobs) %>%
+    dplyr::select(TIMESTAMP, doobs_mid, doobs_deep) %>%
     dplyr::rename(DateTime = TIMESTAMP,
-                  DO_1 = doobs_1,
-                  DO_10 = doobs)
+                  DO_1 = doobs_mid,
+                  DO_10 = doobs_deep)
+
   oxy_1 <- temp_oxy %>%
     dplyr::select(DateTime, DO_1) %>%
     dplyr::mutate(Depth = 1.0) %>%
@@ -350,6 +357,8 @@ insitu_qaqc <- function(realtime_file,
     dplyr::select(DateTime, DO_10) %>%
     dplyr::mutate(Depth = 10.0) %>%
     dplyr::rename(DO = DO_10)
+
+  oxy_10$DO <- as.numeric(oxy_10$DO)
 
   oxy_buoy <- dplyr::full_join(oxy_1, oxy_10) %>%
     dplyr::mutate(DO = DO*1000/32) # convert from mg/L to mmol/m3
