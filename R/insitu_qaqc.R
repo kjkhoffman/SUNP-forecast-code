@@ -403,7 +403,7 @@ insitu_qaqc <- function(realtime_file,
                   site_id = 'sunp') %>%
     dplyr::ungroup() %>%
     dplyr::select(time, site_id, depth, value, variable) %>%
-    dplyr::rename(observed = value)
+    dplyr::rename(datetime = time, observation = value)
 
   dh <- na.omit(dh)
   dh$time <- lubridate::force_tz(dh$time, "UTC") # extra measure just to make sure
