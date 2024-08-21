@@ -406,7 +406,7 @@ insitu_qaqc_withDO <- function(realtime_file,
     dplyr::rename(datetime = time, observation = value)
 
   dh <- na.omit(dh)
-  dh$time <- lubridate::force_tz(dh$time, "UTC") # extra measure just to make sure
+  dh$datetime <- lubridate::force_tz(dh$datetime, "UTC") # extra measure just to make sure
   #attr(dh$time, "tzone") <- "UTC"
   #dh$time <- dh$time - 60*60*4
 
