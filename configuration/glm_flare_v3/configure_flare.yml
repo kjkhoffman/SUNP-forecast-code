@@ -1,0 +1,136 @@
+s3:
+  drivers:
+    endpoint: renc.osn.xsede.org
+    bucket: bio230121-bucket01/flare/drivers/met
+  inflow_drivers:
+    endpoint: renc.osn.xsede.org
+    bucket: bio230121-bucket01/flare/drivers/inflow/sunp/lm_ar
+  outflow_drivers:
+    endpoint: renc.osn.xsede.org
+    bucket: bio230121-bucket01/flare/drivers/inflow/sunp/lm_ar
+  targets:
+    endpoint: renc.osn.xsede.org
+    bucket: bio230121-bucket01/flare/targets
+  forecasts:
+    endpoint: renc.osn.xsede.org
+    bucket: bio230121-bucket01/flare/forecasts/netcdf
+  forecasts_parquet:
+    endpoint: renc.osn.xsede.org
+    bucket: bio230121-bucket01/flare/forecasts/parquet
+  restart:
+    endpoint: renc.osn.xsede.org
+    bucket: bio230121-bucket01/flare/restart
+  scores:
+    endpoint: renc.osn.xsede.org
+    bucket: bio230121-bucket01/flare/scores/parquet
+location:
+   site_id: sunp
+   name: Lake Sunapee
+   latitude: 43.3913   #Degrees North, taken from EDI
+   longitude: 72.0576  #Degrees West, taken from EDI
+metadata:
+   generate_eml: TRUE
+   forecast_project_id: test
+   abstract: "This is where a longer description of the forest can be added"
+   forecast_title: FLARE
+   intellectualRights: insert license
+   model_description:
+      forecast_model_id: https://github.com/rqthomas/flare/commit/d1ddcb07b9d28863890597503fc4aa4a4496de56
+      name: General Lake Model
+      type: process-based
+      repository: https://github.com/AquaticEcoDynamics/GLM/releases/tag/v3.1.0
+   me:
+      individualName:
+         givenName: "Whitney"
+         surName: "Woelmer"
+      electronicMailAddress:  "wwoelmer@vt.edu"
+      id: INSERT ORCID
+da_setup:
+    da_method: enkf
+    par_fit_method: perturb_const
+    ensemble_size:  200
+    localization_distance: .na #distance in meters were covariances in the model error are used
+    no_negative_states: TRUE
+    assimilate_first_step: FALSE
+    use_obs_constraint: TRUE
+    obs_filename: sunp-targets-insitu.csv
+model_settings:
+   ncore: 4
+   model_name: glm_aed #other is "null"
+   base_GLM_nml: glm3_wAED.nml
+   base_AED_nml: aed2.nml
+   base_AED_phyto_pars_nml: aed2_phyto_pars.nml
+   base_AED_zoop_pars_nml: aed2_zoop_pars.nml
+   modeled_depths: [0.1, 0.5, 1.0,
+                    1.5, 2.0, 3.0,
+                    3.5, 4.0, 4.5,
+                    5.0, 5.5, 6.0,
+                    6.5, 7.0, 7.5,
+                    8.0, 8.5, 9.0,
+                    9.5, 10.0, 15.0,
+                    20.0, 25.0, 30.0]
+   max_model_settings: 100
+
+
+ # [0.0, 0.1, 0.33, 0.67,
+ #              1.00, 1.33, 1.67,
+ #              2.00, 2.33, 2.67,
+ #              3.00, 3.33, 3.67,
+ #              4.00, 4.33, 4.67,
+ #              5.00, 5.33, 5.67,
+ #              6.00, 6.33, 6.67,
+ #              7.00, 7.33, 7.67,
+ #              8.00, 8.33, 8.67,
+ #              9.00, 9.33, 10,
+ #              15, 20, 25, 30, 33]
+   par_config_file: parameter_calibration_config.csv
+   obs_config_file: observations_config.csv
+   states_config_file: states_config.csv
+   depth_model_sd_config_file: depth_model_sd.csv
+default_init:
+   lake_depth: 33  #not a modeled state
+   temp: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5] # default temps under mixed conditions in spring
+   temp_depths: [0.127, 1.004, 2.005, 3.021, 4.002, 5.004, 6.004, 7.01, 8.001, 9.015, 9.518]
+   salinity: 0.0
+   snow_thickness: 0.0
+   white_ice_thickness: 0.0
+   blue_ice_thickness: 0.0
+flows:
+   include_inflow: FALSE
+   include_outflow: FALSE
+   use_forecasted_inflow: FALSE
+   forecast_inflow_model: NA
+   observed_inflow_filename: NA
+   inflow_variables: NA
+   use_ler_vars: FALSE
+   historical_inflow_model: NA
+   future_inflow_model: NA
+   historical_outflow_model: NA
+   future_outflow_model: NA
+   local_inflow_directory: NA
+   local_outflow_directory: NA
+   use_flows_s3: NA
+met:
+   future_met_model: 'gefs-v12/stage2/reference_datetime={reference_date}/site_id={site_id}'
+   historical_met_model: 'gefs-v12/stage3/site_id={site_id}'
+   historical_met_use_s3: TRUE
+   future_met_use_s3: TRUE
+   use_openmeteo: FALSE
+   local_met_directory: 'drivers'
+   use_forecasted_met: TRUE
+   use_ler_vars: FALSE
+   forecast_lag_days: 1
+uncertainty:
+   use_obs_constraint: TRUE #no DA
+   observation: TRUE
+   process: TRUE
+   weather: TRUE
+   initial_condition: TRUE
+   parameter: TRUE
+   met_downscale: TRUE
+   inflow: TRUE
+output_settings:
+   diagnostics_names:  [extc]
+   evaluate_past: TRUE
+   variables_in_scores: [state, parameter]
+   generate_plots: FALSE
